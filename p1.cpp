@@ -1,47 +1,36 @@
-//main.c
-
-#include <stdio.h>
-#include "Personagem.h"
-
-
-int main(void) {
-  Personagem *p1;
-
-  p1 = criar_p("Thanos", 100, 0 , 0, BARBARO, 0, 8080, 8020, 8010, 8010, 8009, 8007) ;
-
-  printf("\n Quantidade Dinheiro\n");
-  defDinheiro_P(p1,10.2);
-  imprimir_P(p1);
-
-  printf("\n Aumentar Nivel de Poder\n");
-  aumentarN_P(p1,10);
-  imprimir_P(p1);
-
-   printf("\n \n\n");
-  move_P(p1, 1, 0);
-
-  printf("\n \n\n");
-  move_P(p1, 1, 0);
-
-  printf("\n \n\n");
-
-  destruir_P(p1);
-return 0;
-}
-
-
-//Personagem.c
-
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#include "Personagem.h"
+
+typedef enum {CAVALEIRO, BARBARO} Classe;
+
+
+struct NO{
+	char iten[20];
+	NO *prox;
+};
+
+typedef struct _Personagem {
+  char nome[200];
+  int nivel;
+  int x;
+  int y;
+  Classe classe_P;
+  double Q_Dinheiro;
+  int forca;
+  int inteligencia;
+  int sabedoria;
+  int destreza;
+  int constituicao;
+  int carisma;
+} Personagem;
+
+NO *fim;
 
 Personagem * criar_p( char nomeP[200], int nivelP, int xP, int yP, Classe classe_Per, double Q_DinheiroP, int forcaP, int inteligenciaP, int sabedoriaP, int destrezaP, int constituicaoP, int carismaP) {
 
   Personagem *p;
-  p = malloc(sizeof(Personagem));
 
   strcpy(p->nome, nomeP);
   p->nivel = nivelP;
@@ -86,36 +75,66 @@ void move_P(Personagem *p,int vX, int vY){
   printf("Nova Posicao: [%d] [%d]",p->x,p->y);
 }
 
+void criar_M(char i[20]){
+  NO *M;
+  //M->iten = i;
+  M->prox = NULL;
+  fim = M;
+}
+
+void  inserirNO(NO *M,char itenI[20]){
+  if(contar(M) < 10){
+    M->iten = itenI;
+    M->prox = NULL;
+		fim->prox = M;
+		fim = M;
+	}
+}
+
+void imprimir_M(NO *M){
+		do{
+			printf("\n%d",M->iten);
+			M = M->prox;
+}while(M->prox != NULL);
+}
+
+int contar(NO *M){
+  int i = 1;
+  while(M->prox != NULL){
+      i++;
+			M = M->prox;
+  }
+return i;
+}
+
 void destruir_P(Personagem *p) {
   free(p);
 }//Destroi Personagem
 
+void destruir_M(NO *M) {
+  free(M);
+}//DestroiP NO
+int main(void) {
+  Personagem *p1;
+  NO *m1;
 
-//Personagem.h
+  p1 = criar_p("Thanos", 100, 0 , 0, BARBARO, 0, 8080, 8020, 8010, 8010, 8009, 8007) ;
+  m1 = criar_M("Mapa");
 
-typedef enum {CAVALEIRO, BARBARO} Classe;
+  printf("\n Quantidade Dinheiro\n");
+  defDinheiro_P(p1,10.2);
+  imprimir_P(p1);
 
+  printf("\n Aumentar Nivel de Poder\n");
+  aumentarN_P(p1,10);
+  imprimir_P(p1);
 
-typedef struct _Personagem {
-  char nome[200];
-  int nivel;
-  int x;
-  int y;
-  Classe classe_P;
-  double Q_Dinheiro;
-  int forca;
-  int inteligencia;
-  int sabedoria;
-  int destreza;
-  int constituicao;
-  int carisma;
-} Personagem;
+   printf("\n \n\n");
+  move_P(p1, 1, 0);
 
-// OPERAÇÕES
-Personagem * criar_p( char n[200], int nV, int x, int y, Classe cl_Per, double Q_DinP, int forcaPer, int inteP, int sabP, int destP, int constP, int carisP);
+  printf("\n \n\n");
+  move_P(p1, 1, 0);
 
-void aumentarN_P(Personagem *p, int aumento);
-void defDinheiro_P(Personagem *p, double valor);
-void move_P(Personagem *p,int valorX, int valorY);
-void imprimir_P(Personagem *p);
-void  destruir_P(Personagem *p);
+  destruir_P(p1);
+return 0;
+}
